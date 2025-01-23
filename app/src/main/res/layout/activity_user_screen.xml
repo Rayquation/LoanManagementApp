@@ -6,6 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/cardview_dark_background"
+    android:gravity="center"
     tools:context=".StartScreen">
     <TextView
         android:layout_width="match_parent"
@@ -13,11 +15,16 @@
         android:id="@+id/brandTextView"
         android:text="@string/brand"
         android:textSize="18sp"
+        android:textColor="@color/white"
+        android:layout_margin="8dp"
         />
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/brandSpinner"
+        android:background="@color/material_dynamic_neutral70"
+        android:layout_margin="8dp"
+
         />
     <TextView
         android:layout_width="match_parent"
@@ -25,12 +32,16 @@
         android:id="@+id/cabelTextView"
         android:text="@string/cabel"
         android:textSize="18sp"
+        android:textColor="@color/white"
+        android:layout_margin="8dp"
         />
 
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/cabelSpinner"
+        android:background="@color/material_dynamic_neutral70"
+        android:layout_margin="8dp"
         />
     <TextView
         android:layout_width="match_parent"
@@ -38,12 +49,16 @@
         android:id="@+id/loanNameTextView"
         android:text="@string/loaner_nameTextView"
         android:textSize="18sp"
+        android:textColor="@color/white"
+        android:layout_margin="8dp"
         />
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/loanNameEditText"
         android:hint="@string/name"
+        android:background="@color/cardview_dark_background"
+        android:layout_margin="8dp"
         />
     <TextView
         android:layout_width="match_parent"
@@ -51,12 +66,16 @@
         android:id="@+id/loanEmailTextView"
         android:text="@string/loaner_email"
         android:textSize="18sp"
+        android:textColor="@color/white"
+        android:layout_margin="8dp"
         />
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/loanEmailEditText"
         android:hint="@string/email"
+        android:background="@color/cardview_dark_background"
+        android:layout_margin="8dp"
         />
     <Button
         android:layout_width="wrap_content"
