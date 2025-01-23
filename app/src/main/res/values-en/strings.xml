@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="admin">Admin</string>
+    <string name="bruger">Bruger</string>
+    <string name="loaner_name">Loaner Name</string>
+    <string name="brand">Brand:</string>
+    <string name="cabel">Cabel:</string>
+    <string name="loaner_nameTextView">Loaner Name:</string>
+    <string name="name">Name</string>
+    <string name="loaner_email">Loaner Email:</string>
+    <string name="email">Email</string>
+    <string name="create">Create</string>
+    <string name="select_cable">Select Cable</string>
+    <string name="select_brand">Select Brand</string>
+</resources>
