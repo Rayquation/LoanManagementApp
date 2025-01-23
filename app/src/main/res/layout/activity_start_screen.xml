@@ -7,19 +7,30 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".StartScreen">
+    tools:context=".StartScreen"
+    android:background="@color/cardview_dark_background"
+    >
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="211dp"
+        android:layout_height="283dp"
+        app:srcCompat="@drawable/gps" />
+
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="300dp"
+        android:layout_height="75dp"
         android:id="@+id/userBtn"
         android:text="@string/bruger"
         android:layout_gravity="center"
         />
+
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/adminBtn"
-        android:text="@string/admin"
+        android:layout_width="300dp"
+        android:layout_height="75dp"
         android:layout_gravity="center"
-        />
+
+        android:text="@string/admin" />
+
 </LinearLayout>
