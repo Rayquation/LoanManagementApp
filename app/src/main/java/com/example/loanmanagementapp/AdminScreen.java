@@ -1,6 +1,7 @@
 package com.example.loanmanagementapp;
 
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,7 +23,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class AdminScreen extends AppCompatActivity {
@@ -33,7 +37,10 @@ public class AdminScreen extends AppCompatActivity {
     private Spinner cabelFilterSpinner;
     private ListView loanListView;
     private ArrayAdapter<String> loanAdapter;
-    private Button filterByDateButton;
+    private Button datePickerButton;
+    private TextView selectedDateTextView;
+    private Button resetFiltersButton;
+
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -50,6 +57,9 @@ public class AdminScreen extends AppCompatActivity {
         brandFilterSpinner = findViewById(R.id.brandFilterSpinner);
         cabelFilterSpinner = findViewById(R.id.cabelFilterSpinner);
         loanListView = findViewById(R.id.loanListView);
+        selectedDateTextView = findViewById(R.id.selectedDateTextView);
+        datePickerButton = findViewById(R.id.datePickerButton);
+        resetFiltersButton = findViewById(R.id.resetFiltersButton);
 
         // Initialize TabletLoanManager and load loans
         tabletLoanManager = new TabletLoanManager(this);
@@ -58,8 +68,47 @@ public class AdminScreen extends AppCompatActivity {
 
 
         setupFilters(brandFilterSpinner,cabelFilterSpinner);
+        setupDateFilter(selectedDateTextView, datePickerButton);
         setupLoanListView();
+
+        resetFiltersButton.setOnClickListener(v -> resetFilters());
     }
+    private void resetFilters() {
+        // Reset spinners to "ALL" or first option
+        brandFilterSpinner.setSelection(0);
+        cabelFilterSpinner.setSelection(0);
+
+        // Reset date filter
+        selectedDateTextView.setText("No Date Selected");
+
+        // Reset filtered loans to all loans
+        filteredLoans = new ArrayList<>(allLoans);
+
+        // Update ListView
+        loanAdapter.clear();
+        loanAdapter.addAll(formatLoanList(filteredLoans));
+        loanAdapter.notifyDataSetChanged();
+
+        Toast.makeText(this, "Filters reset", Toast.LENGTH_SHORT).show();
+    }
+    private void setupDateFilter(TextView selectedDateTextView, Button datePickerButton) {
+        final Calendar calendar = Calendar.getInstance();
+
+        datePickerButton.setOnClickListener(v -> {
+            DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                    (view, year, month, dayOfMonth) -> {
+                        // Format the selected date as "YYYY-MM-DD" and display it
+                        String selectedDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month + 1, dayOfMonth);
+                        selectedDateTextView.setText(selectedDate);
+                        filterLoans(); // Trigger filtering when a date is selected
+                    },
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH));
+            datePickerDialog.show();
+        });
+    }
+
 
     private void setupFilters(Spinner brandSpinner,Spinner cabelSpinner) {
         // Create lists for filters
@@ -67,6 +116,8 @@ public class AdminScreen extends AppCompatActivity {
         List<Cabel> cabels = Arrays.asList(Cabel.values());
 
         //Create adapters for Brand and Cabel
+        //adapters serve as intermediaries that bridge the gap between a data source and a user
+        //interface component, particularly in graphical user interfaces (GUIs)
         ArrayAdapter<Brand> brandAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, brands);
         brandAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         brandSpinner.setAdapter(brandAdapter);
@@ -107,8 +158,14 @@ public class AdminScreen extends AppCompatActivity {
         // Set item click listener for deletion
         loanListView.setOnItemClickListener((parent, view, position, id) -> {
             TabletLoan selectedLoan = filteredLoans.get(position);
-            allLoans.remove(selectedLoan); // Remove from main list
-            filterLoans(); // Refresh filtered list
+
+            // Remove loan using TabletLoanManager
+            tabletLoanManager.deleteLoan(selectedLoan);
+            // Update the lists and UI
+            filteredLoans.remove(selectedLoan); // Update filtered list
+            allLoans = tabletLoanManager.getAllTabletLoans(); // Refresh all loans from storage
+            filterLoans(); // Refresh filtered loans
+
             Toast.makeText(this, "Loan deleted", Toast.LENGTH_SHORT).show();
         });
     }
@@ -117,18 +174,19 @@ public class AdminScreen extends AppCompatActivity {
         // Get selected filters
         String selectedBrand = brandFilterSpinner.getSelectedItem().toString();
         String selectedCabel = cabelFilterSpinner.getSelectedItem().toString();
-
-        // Apply filters
+        String selectedDate = selectedDateTextView.getText().toString();
         filteredLoans = allLoans.stream()
                 .filter(loan -> ("ALL".equals(selectedBrand) || selectedBrand.equals(loan.getBrand().toString())) &&
-                        ("ALL".equals(selectedCabel) || selectedCabel.equals(loan.getCabel().toString())))
+                        ("ALL".equals(selectedCabel) || selectedCabel.equals(loan.getCabel().toString())) &&
+                        ("No Date Selected".equals(selectedDate) || selectedDate.equals(loan.getDateForLoan())))
                 .collect(Collectors.toList());
-        // Apply date and time filter if selectedDateTime is not null
+
         // Update ListView
         loanAdapter.clear();
         loanAdapter.addAll(formatLoanList(filteredLoans));
         loanAdapter.notifyDataSetChanged();
     }
+
 
     private List<String> formatLoanList(List<TabletLoan> loans) {
 
