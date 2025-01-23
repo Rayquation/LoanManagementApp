@@ -3,6 +3,7 @@ package com.example.loanmanagementapp;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 enum Brand {ALL,Samsung,Acer;
 @Override
@@ -29,6 +30,8 @@ public class TabletLoan implements Serializable {
     private String lendersName;
     private String lendersEmail;
     private String dateForLoan;
+    private String loanId; // Use a unique identifier for comparison
+    private String tabletName; // Example field
 
     public Brand getBrand(){
         return brand;
@@ -60,6 +63,17 @@ public class TabletLoan implements Serializable {
     public String getDateForLoan(){
         return dateForLoan;
     }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true; // Compare memory addresses first
+        if (o == null || getClass() != o.getClass()) return false; // Ensure the same class
+        TabletLoan that = (TabletLoan) o;
+        return Objects.equals(loanId, that.loanId); // Compare unique identifiers
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(loanId); // Generate hash based on unique identifier
+    }
 
 }
