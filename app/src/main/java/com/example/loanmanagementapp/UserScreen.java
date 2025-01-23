@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -112,11 +114,9 @@ public class UserScreen extends AppCompatActivity {
     }
 
     private void createLoan(String name, String email) {
-        final DateTimeFormatter CUSTOM_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         tabletLoan.setLendersName(name);
         tabletLoan.setLendersEmail(email);
-        LocalDateTime dateTime = LocalDateTime.now();
-        tabletLoan.setDateForLoan(dateTime.format(CUSTOM_FORMATTER));
+        tabletLoan.setDateForLoan(LocalDate.now().toString());
     }
 
     private void setupSpinners(Spinner brandSpinner, Spinner cabelSpinner) {
