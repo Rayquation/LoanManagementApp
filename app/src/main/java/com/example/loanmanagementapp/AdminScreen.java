@@ -1,6 +1,7 @@
 package com.example.loanmanagementapp;
 
 import android.annotation.SuppressLint;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -32,7 +33,7 @@ public class AdminScreen extends AppCompatActivity {
     private Spinner cabelFilterSpinner;
     private ListView loanListView;
     private ArrayAdapter<String> loanAdapter;
-    private Button clearFiltersButton;
+    private Button filterByDateButton;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -54,6 +55,7 @@ public class AdminScreen extends AppCompatActivity {
         tabletLoanManager = new TabletLoanManager(this);
         allLoans = tabletLoanManager.getAllTabletLoans(); // Fetch data
         filteredLoans = new ArrayList<>(allLoans);
+
 
         setupFilters(brandFilterSpinner,cabelFilterSpinner);
         setupLoanListView();
@@ -121,7 +123,7 @@ public class AdminScreen extends AppCompatActivity {
                 .filter(loan -> ("ALL".equals(selectedBrand) || selectedBrand.equals(loan.getBrand().toString())) &&
                         ("ALL".equals(selectedCabel) || selectedCabel.equals(loan.getCabel().toString())))
                 .collect(Collectors.toList());
-
+        // Apply date and time filter if selectedDateTime is not null
         // Update ListView
         loanAdapter.clear();
         loanAdapter.addAll(formatLoanList(filteredLoans));
