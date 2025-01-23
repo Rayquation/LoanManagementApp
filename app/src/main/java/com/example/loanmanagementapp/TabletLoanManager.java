@@ -3,6 +3,7 @@ package com.example.loanmanagementapp;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -32,22 +33,6 @@ public class TabletLoanManager {
                 .apply(); // Apply changes
     }
 
-    // Retrieve a TabletLoan object
-    public TabletLoan getTabletLoan() {
-        String tabletLoanJson = sharedPreferences.getString("tablet_loan", null);
-        if (tabletLoanJson != null) {
-            return gson.fromJson(tabletLoanJson, TabletLoan.class); // Convert JSON back to TabletLoan
-        }
-        return null; // Return null if no data is saved
-    }
-
-    // Clear the saved TabletLoan
-    public void clearTabletLoan() {
-        sharedPreferences.edit()
-                .remove("tablet_loan")
-                .apply();
-    }
-
     // Get all saved TabletLoan objects
     public List<TabletLoan> getAllTabletLoans() {
         String tabletLoanJson = sharedPreferences.getString("tablet_loans", null);
@@ -58,11 +43,15 @@ public class TabletLoanManager {
         }
         return new ArrayList<>(); // Return empty list if no data is saved
     }
+    public void deleteLoan(TabletLoan tabletLoan) {
+        List<TabletLoan> allLoans = getAllTabletLoans(); // Get current list
+        boolean isRemoved = allLoans.remove(tabletLoan); // Attempt to remove the loan
 
-    // Clear all saved TabletLoans
-    public void clearAllTabletLoans() {
-        sharedPreferences.edit()
-                .remove("tablet_loans")
-                .apply();
+        if (isRemoved) {
+            String updatedTabletLoanJson = gson.toJson(allLoans); // Convert updated list to JSON
+            sharedPreferences.edit()
+                    .putString("tablet_loans", updatedTabletLoanJson) // Save updated list
+                    .apply(); // Apply changes
+        }
     }
 }
